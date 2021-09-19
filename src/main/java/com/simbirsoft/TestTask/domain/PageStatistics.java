@@ -1,6 +1,8 @@
 package com.simbirsoft.TestTask.domain;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 @Entity
@@ -11,9 +13,10 @@ public class PageStatistics {
     private Long id;
 
     private String url;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, Long> statistics;
     private String path;
+    private Date dateUpload;
 
     public PageStatistics() {
     }
@@ -22,6 +25,7 @@ public class PageStatistics {
         this.url = url;
         this.statistics = statistics;
         this.path = path;
+        this.dateUpload = new Date();
     }
 
     public Long getId() {
@@ -54,6 +58,14 @@ public class PageStatistics {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Date getDateUpload() {
+        return dateUpload;
+    }
+
+    public void setDateUpload(Date date) {
+        this.dateUpload = date;
     }
 
     @Override

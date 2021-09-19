@@ -1,20 +1,30 @@
 package com.simbirsoft.TestTask.service;
 
 import com.simbirsoft.TestTask.domain.PageStatistics;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @Component
 public class PageHTTP {
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     public PageStatistics download(String url) throws IOException, IllegalArgumentException{
             Document doc = Jsoup.connect(url)
@@ -33,6 +43,24 @@ public class PageHTTP {
     }
 
     private String save(Document doc) {
-    return "";
+
+        String resultFileName = null;
+
+        if (doc!=null){
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            resultFileName = UUID.randomUUID().toString() + "_" + doc.title() + ".html";
+
+            try (BufferedWriter writer = new BufferedWriter
+                    (new FileWriter(uploadPath + resultFileName))){
+                writer.write(doc.outerHtml());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    return resultFileName;
     }
 }

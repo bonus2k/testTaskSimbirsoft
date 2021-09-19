@@ -10,6 +10,5 @@ public class MainController {
     @GetMapping
     public String MainController() {
         return "main";
-
     }
 }
